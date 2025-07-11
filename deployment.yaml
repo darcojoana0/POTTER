@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: potter-v3
+  name: potter-v4
 spec:
   containers:
     - name: shell
