@@ -7,7 +7,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: potter
+      app: potter 
   template:
     metadata:
       labels:
