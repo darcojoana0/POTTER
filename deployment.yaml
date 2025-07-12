@@ -1,14 +1,20 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: potter-v3
+  name: potter-shell
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: potter-shell
   template:
+    metadata:
+      labels:
+        app: potter-shell
     spec:
-      restartPolicy: Never
       containers:
         - name: shell
           image: alpine
-          command: ["sh"]
-          stdin:true
-          tty:true
+          command: [ "sh", "-c", "sleep 3600" ]
+          stdin: true
+          tty: true
