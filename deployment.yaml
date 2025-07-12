@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: potter-shell
+  name: potter
   namespace: sesamo-api-argocd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: potter-shell
+      app: potter
   template:
     metadata:
       labels:
-        app: potter-shell
+        app: potter
     spec:
       containers:
         - name: shell
