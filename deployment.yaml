@@ -1,23 +1,8 @@
-project: default
-source:
-  repoURL: 'https://github.com/darcojoana0/POTTER.git'
-  path: .
-  targetRevision: HEAD
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: sesamo-api-argocd
-project: default
-source:
-  repoURL: 'https://github.com/darcojoana0/POTTER.git'
-  path: .
-  targetRevision: HEAD
-destination:
-  server: 'https://kubernetes.default.svc'
-  namespace: sesamo-api-argocd
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: potter-shell
+  namespace: sesamo-api-argocd
 spec:
   replicas: 1
   selector:
