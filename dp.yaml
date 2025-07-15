@@ -1,0 +1,48 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: potter-secret-test
+  namespace: sesamo-api-argocd
+  labels:
+    app: potter-secret-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: potter-secret-test
+  template:
+    metadata:
+      labels:
+        app: potter-secret-test
+    spec:
+      serviceAccountName: sesamo-api-service-account
+      restartPolicy: Always
+      initContainers:
+        - name: secrets-init
+          image: gcr.io/magalu-cicd/ipet/secrets-init:v0.2.9
+          command: ["sh", "-c"]
+          args: ["cp /usr/local/bin/secrets-init /secrets-init/bin/"]
+          volumeMounts:
+            - name: secrets-init-volume
+              mountPath: /secrets-init/bin
+      containers:
+        - name: potter-container
+          image: gcr.io/google-containers/node-hello:1.0
+          command: ["/secrets-init/bin/secrets-init"]
+          args:
+            - --provider=google
+            - node
+            - app.js
+          env:
+            - name: APP_API_UNCLECHAN_KEYCLOAK_CLIENT_SECRET
+              value: gcp:secretmanager:projects/446211719377/secrets/SESAMO-API_PRD_APP_API_UNCLECHAN_KEYCLOAK_CLIENT_SECRET/versions/1
+            - name: APP_API_GRIPHOOK_KEYCLOAK_CLIENT_SECRET
+              value: gcp:secretmanager:projects/446211719377/secrets/SESAMO-API_PRD_APP_API_GRIPHOOK_KEYCLOAK_CLIENT_SECRET/versions/1
+          volumeMounts:
+            - name: secrets-init-volume
+              mountPath: /secrets-init/bin
+      volumes:
+        - name: secrets-init-volume
+          emptyDir: {}
+ 
