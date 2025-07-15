@@ -1,0 +1,50 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sesamo-api-db-migrate
+  namespace: sesamo-api-argocd
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sesamo-api
+    spec:
+      serviceAccountName: sesamo-api-service-account
+      restartPolicy: Never
+      initContainers:
+        - name: secrets-init
+          image: gcr.io/magalu-cicd/ipet/secrets-init:v0.2.9
+          command: ["sh", "-c"]
+          args:
+            - cp /usr/local/bin/secrets-init /secrets-init/bin/
+          volumeMounts:
+            - name: secrets-init-volume
+              mountPath: /secrets-init/bin
+      containers:
+        - name: release
+          image: gcr.io/magalu-cicd/sesamo:v0.7.3
+          imagePullPolicy: Always
+          command: ["/secrets-init/bin/secrets-init"]
+          args:
+            - --provider=google
+            - node
+            - node_modules/db-migrate/bin/db-migrate
+            - up
+          env:
+            - name: APP_DB_PASSWORD
+              value: gcp:secretmanager:projects/446211719377/secrets/SESAMO-API_PRD_APP_DB_PASSWORD/versions/1
+            - name: APP_API_ACQUIRER_ADYEN_SECURITY_KEY
+              value: gcp:secretmanager:projects/446211719377/secrets/SESAMO-API_PRD_APP_API_ACQUIRER_ADYEN_SECURITY_KEY/versions/1
+            - name: APP_NEW_RELIC_LICENSE_KEY
+              value: gcp:secretmanager:projects/446211719377/secrets/SESAMO-API_PRD_APP_NEW_RELIC_LICENSE_KEY/versions/1
+          volumeMounts:
+            - name: secrets-init-volume
+              mountPath: /secrets-init/bin
+      volumes:
+        - name: secrets-init-volume
+          emptyDir: {}
